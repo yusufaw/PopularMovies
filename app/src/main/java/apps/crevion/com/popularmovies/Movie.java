@@ -1,13 +1,17 @@
 package apps.crevion.com.popularmovies;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by ucup_aw on 16/04/16.
  */
-public class Movie {
+public class Movie implements Parcelable {
     public static final String TMDB_IMAGE_PATH = "http://image.tmdb.org/t/p/w500";
 
     private String title;
@@ -20,6 +24,25 @@ public class Movie {
 
     @SerializedName("backdrop_path")
     private String backdrop;
+
+    protected Movie(Parcel in) {
+        title = in.readString();
+        poster = in.readString();
+        description = in.readString();
+        backdrop = in.readString();
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public String getTitle() {
         return title;
@@ -52,6 +75,19 @@ public class Movie {
 
     public void setBackdrop(String backdrop) {
         this.backdrop = backdrop;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(poster);
+        dest.writeString(description);
+        dest.writeString(backdrop);
     }
 
     public static class MovieResult {
